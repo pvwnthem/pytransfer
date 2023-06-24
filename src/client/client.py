@@ -27,6 +27,7 @@ class Client:
     def send_folder(self, folder_path):
         folder_name = os.path.basename(folder_path)
         self.client_socket.send(folder_name.encode())
+        self.client_socket.send(b"1")
 
         for root, _, files in os.walk(folder_path):
             for file in files:
