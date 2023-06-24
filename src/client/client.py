@@ -9,6 +9,8 @@ class Client:
         self.path = path
 
     def send_file(self, file_path):
+        self.client_socket.send(b"FILE")
+
         file_name = os.path.basename(file_path)
         file_name_size = len(file_name)
         self.client_socket.send(file_name_size.to_bytes(4, "big"))
@@ -24,6 +26,8 @@ class Client:
             print("An error occurred while sending the file:", str(e))
 
     def send_folder(self, folder_path):
+        self.client_socket.send(b"FOLDER")
+
         folder_name = os.path.basename(folder_path)
         self.client_socket.send(folder_name.encode())
 
@@ -31,6 +35,14 @@ class Client:
             for file in files:
                 file_path = os.path.join(root, file)
                 self.send_file(file_path)
+
+        # Send a message indicating all files have been sent
+        self.client_socket.send(b"DONE")
+
+        # Wait for acknowledgement from the server
+        ack = self.client_socket.recv(1024)
+        if ack == b"ACK":
+            print("Folder sent successfully:", folder_name)
 
     def run(self):
         try:
