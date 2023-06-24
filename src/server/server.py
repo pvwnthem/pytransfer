@@ -10,7 +10,7 @@ class Server:
     def receive_file(self, client_socket):
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
         file_name = client_socket.recv(file_name_size).decode("utf-8")
-
+        print(file_name)
         try:
             with open(file_name, 'wb') as file:
                 while True:
