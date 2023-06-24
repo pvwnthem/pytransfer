@@ -9,7 +9,7 @@ class Server:
 
     def receive_file(self, client_socket):
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
-        file_name = client_socket.recv(file_name_size).decode()
+        file_name = client_socket.recv(file_name_size).decode("utf-8")
 
         try:
             with open(file_name, 'wb') as file:
@@ -24,7 +24,7 @@ class Server:
             print("An error occurred while receiving the file:", str(e))
 
     def receive_folder(self, client_socket):
-        folder_name = client_socket.recv(1024).decode()
+        folder_name = client_socket.recv(1024).decode("utf-8")
 
         try:
             os.mkdir(folder_name)
