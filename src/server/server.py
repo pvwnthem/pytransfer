@@ -20,17 +20,23 @@ class Server:
         file_type = client_socket.recv(1)
         print(file_type.decode())
 
-        try:
-            with open(file_name, 'wb') as file:
-                while True:
-                    data = client_socket.recv(1024)
-                    if not data:
-                        break
-                    file.write(data)
+        # 0 - file
+        # 1 - folder
+        if (file_type.decode() == 0) :
+            # file
+            try:
+                with open(file_name, 'wb') as file:
+                    while True:
+                        data = client_socket.recv(1024)
+                        if not data:
+                            break
+                        file.write(data)
 
-            print("File received successfully:", file_name)
-        except IOError as e:
-            print("An error occurred while receiving the file:", str(e))
+                print("File received successfully:", file_name)
+            except IOError as e:
+                print("An error occurred while receiving the file:", str(e))
+        
+        
 
         client_socket.close()
         self.server_socket.close()

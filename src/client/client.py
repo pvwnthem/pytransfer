@@ -23,7 +23,7 @@ class Client:
             print("File sent successfully:", file_name)
         except IOError as e:
             print("An error occurred while sending the file:", str(e))
-    """
+    
     def send_folder(self, folder_path):
         folder_name = os.path.basename(folder_path)
         self.client_socket.send(folder_name.encode())
@@ -32,7 +32,7 @@ class Client:
             for file in files:
                 file_path = os.path.join(root, file)
                 self.send_file(file_path)
-    """
+    
     def run(self):
         try:
             self.client_socket.connect((self.ip, self.port))
