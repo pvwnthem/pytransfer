@@ -1,6 +1,6 @@
 import argparse
-from server import Server
-from client import Client
+from src.server.server import Server
+from src.client.client import Client
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='File Transfer Program')
