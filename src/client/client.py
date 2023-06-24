@@ -9,11 +9,11 @@ class Client:
         self.path = path
 
     def send_file(self, file_path):
-        #self.client_socket.send(b"0")
         file_name = os.path.basename(file_path)
         file_name_size = len(file_name)
         self.client_socket.send(file_name_size.to_bytes(4, "big"))
         self.client_socket.send(file_name.encode())
+        self.client_socket.send(b"0")
 
         try:
             with open(file_path, 'rb') as file:
