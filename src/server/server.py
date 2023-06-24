@@ -65,9 +65,13 @@ class Server:
                 break
 
             if data == b"FILE":
+                print("fg=ile")
                 self.receive_file(client_socket)
+                print("fg=ile")
             elif data == b"FOLDER":
+                print("fg=older")
                 self.receive_folder(client_socket)
+                print("fg=older")
 
         client_socket.close()
         self.server_socket.close()
