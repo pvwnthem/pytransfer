@@ -9,7 +9,7 @@ class Server:
     def run(self):
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(1)
-        print("Server is listening for incoming connections on port", self.port)
+        print("Server is listening for incoming connections on port", self.port, " with ip ", self.server_socket.getsockname()[0])
 
         client_socket, addr = self.server_socket.accept()
         print("Connected to:", addr)
