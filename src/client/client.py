@@ -39,6 +39,8 @@ class Client:
 
             if os.path.isfile(self.path):
                 self.send_file(self.path)
+            if os.path.isdir(self.path):
+                self.send_folder(self.path)
             else:
                 print("Invalid path:", self.path)
                 return
