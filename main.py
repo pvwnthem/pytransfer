@@ -9,7 +9,7 @@ class FileSharerClient:
         self.socket = socket.socket()
 
     def connect(self):
-        self.socket.connect((self.host, self.port))
+        self.socket.connect((socket.gethostname(), self.port))
         print("Connected to the server.")
 
     def send_file(self, file_path):
@@ -54,7 +54,7 @@ class FileSharerServer:
         self.socket = socket.socket()
 
     def start(self):
-        self.socket.bind((self.host, self.port))
+        self.socket.bind((socket.gethostname(), self.port))
         self.socket.listen(1)
         print("Server started. Waiting for connections...")
 
