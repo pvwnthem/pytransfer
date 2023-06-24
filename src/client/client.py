@@ -8,16 +8,11 @@ class Client:
         self.port = 9999
         self.path = path
 
-    def send_file(self, file_path, signal):
+    def send_file(self, file_path):
         file_name = os.path.basename(file_path)
         file_name_size = len(file_name)
         self.client_socket.send(file_name_size.to_bytes(4, "big"))
         self.client_socket.send(file_name.encode())
-        if (signal) :
-            self.client_socket.send(b"1")
-            
-        
-        
 
         try:
             with open(file_path, 'rb') as file:
@@ -35,15 +30,15 @@ class Client:
         for root, _, files in os.walk(folder_path):
             for file in files:
                 file_path = os.path.join(root, file)
-                self.send_file(file_path, True)
+                self.send_file(file_path)
 
     def run(self):
         try:
             self.client_socket.connect((self.ip, self.port))
 
             if os.path.isfile(self.path):
-                self.send_file(self.path, True)
-            if os.path.isdir(self.path):
+                self.send_file(self.path)
+            elif os.path.isdir(self.path):
                 self.send_folder(self.path)
             else:
                 print("Invalid path:", self.path)
@@ -51,8 +46,5 @@ class Client:
 
         except ConnectionRefusedError:
             print("Failed to connect to the peer:", self.ip)
-        except Exception as e:
-            print("An error occurred:", str(e))
 
         self.client_socket.close()
-
