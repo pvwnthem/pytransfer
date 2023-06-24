@@ -62,6 +62,7 @@ class Server:
         while True:
             data = client_socket.recv(1024)
             if not data:
+                print("wtf")
                 break
 
             if data == b"FILE":
