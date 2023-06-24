@@ -1,9 +1,8 @@
 import socket
 import os
 
-# Server IP and port
-SERVER_IP = '127.0.0.1'  # Change this to the server IP
-SERVER_PORT = 12345  # Change this to the server port
+# Server IP and port  # Change this to the server IP
+SERVER_PORT = 9999  # Change this to the server port
 
 # Buffer size for sending/receiving data
 BUFFER_SIZE = 4096
@@ -94,10 +93,10 @@ def start_server():
     print("Starting server...")
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((SERVER_IP, SERVER_PORT))
+    server_socket.bind((server_socket.getsockname()[0], SERVER_PORT))
     server_socket.listen(1)
 
-    print(f"Server listening on {SERVER_IP}:{SERVER_PORT}")
+    print(f"Server listening on {server_socket.getsockname()[0]}:{SERVER_PORT}")
 
     while True:
         client_socket, client_address = server_socket.accept()
@@ -127,7 +126,7 @@ def start_client():
     print("Starting client...")
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((SERVER_IP, SERVER_PORT))
+    client_socket.connect((client_socket.getsockname()[0], SERVER_PORT))
 
     while True:
         print("\nMenu:")
