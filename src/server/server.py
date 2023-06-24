@@ -16,6 +16,7 @@ class Server:
                 while True:
                     data = client_socket.recv(1024)
                     if not data:
+                        print("nd")
                         break
                     file.write(data)
 
@@ -29,6 +30,7 @@ class Server:
         try:
             os.mkdir(folder_name)
         except FileExistsError:
+            print("unstuck err")
             pass
 
         os.chdir(folder_name)
