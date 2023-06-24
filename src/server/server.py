@@ -30,7 +30,7 @@ class Server:
 
         while True:
             file_name_size = int.from_bytes(client_socket.recv(4), "big")
-            file_name = client_socket.recv(file_name_size).decode("utf-8")
+            file_name = client_socket.recv(file_name_size).decode("utf-8", errors="ignore")
 
             if file_name == "DONE":
                 break
@@ -58,11 +58,11 @@ class Server:
 
             if data == b"FILE":
                 file_name_size = int.from_bytes(client_socket.recv(4), "big")
-                file_name = client_socket.recv(file_name_size).decode("utf-8")
+                file_name = client_socket.recv(file_name_size).decode("utf-8", errors="ignore")
                 self.receive_file(client_socket, file_name)
             elif data == b"FOLDER":
                 folder_name_size = int.from_bytes(client_socket.recv(4), "big")
-                folder_name = client_socket.recv(folder_name_size).decode("utf-8")
+                folder_name = client_socket.recv(folder_name_size).decode("utf-8", errors="ignore")
                 self.receive_folder(client_socket, folder_name)
 
         client_socket.close()

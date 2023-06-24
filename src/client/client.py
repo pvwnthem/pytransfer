@@ -10,10 +10,11 @@ class Client:
 
     def send_file(self, file_path):
         file_name = os.path.basename(file_path)
-        file_name_size = len(file_name)
+        file_name_encoded = file_name.encode("utf-8")
+        file_name_size = len(file_name_encoded)
         self.client_socket.send(b"FILE")
         self.client_socket.send(file_name_size.to_bytes(4, "big"))
-        self.client_socket.send(file_name.encode())
+        self.client_socket.send(file_name_encoded)
 
         try:
             with open(file_path, 'rb') as file:
@@ -26,10 +27,11 @@ class Client:
 
     def send_folder(self, folder_path):
         folder_name = os.path.basename(folder_path)
-        folder_name_size = len(folder_name)
+        folder_name_encoded = folder_name.encode("utf-8")
+        folder_name_size = len(folder_name_encoded)
         self.client_socket.send(b"FOLDER")
         self.client_socket.send(folder_name_size.to_bytes(4, "big"))
-        self.client_socket.send(folder_name.encode())
+        self.client_socket.send(folder_name_encoded)
 
         for root, _, files in os.walk(folder_path):
             for file in files:
