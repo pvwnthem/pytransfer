@@ -7,7 +7,10 @@ class Server:
         self.host = socket.gethostname()
         self.port = 9999
 
-    def receive_file(self, client_socket, file_name):
+    def receive_file(self, client_socket):
+        file_name_size = int.from_bytes(client_socket.recv(4), "big")
+        file_name = client_socket.recv(file_name_size).decode("utf-8")
+        print("Receiving file:", file_name)
         try:
             with open(file_name, 'wb') as file:
                 while True:
@@ -20,7 +23,11 @@ class Server:
         except IOError as e:
             print("An error occurred while receiving the file:", str(e))
 
-    def receive_folder(self, client_socket, folder_name):
+    def receive_folder(self, client_socket):
+        folder_name_size = int.from_bytes(client_socket.recv(4), "big")
+        folder_name = client_socket.recv(folder_name_size).decode("utf-8")
+        print("Receiving folder:", folder_name)
+
         try:
             os.mkdir(folder_name)
         except FileExistsError:
@@ -29,14 +36,13 @@ class Server:
         os.chdir(folder_name)
 
         while True:
-            file_name_size = int.from_bytes(client_socket.recv(4), "big")
-            file_name = client_socket.recv(file_name_size).decode("utf-8", errors="ignore")
+            self.receive_file(client_socket)
+            client_socket.send(b"ACK".encode())  # Send acknowledgement to client
 
-            if file_name == "DONE":
+            # Check if all files have been received
+            data = client_socket.recv(1024)
+            if data.decode("utf-8") == "DONE":
                 break
-
-            self.receive_file(client_socket, file_name)
-            client_socket.send(b"ACK")
 
         os.chdir("..")
 
@@ -52,18 +58,13 @@ class Server:
 
         while True:
             data = client_socket.recv(1024)
-
             if not data:
                 break
 
             if data == b"FILE":
-                file_name_size = int.from_bytes(client_socket.recv(4), "big")
-                file_name = client_socket.recv(file_name_size).decode("utf-8", errors="ignore")
-                self.receive_file(client_socket, file_name)
+                self.receive_file(client_socket)
             elif data == b"FOLDER":
-                folder_name_size = int.from_bytes(client_socket.recv(4), "big")
-                folder_name = client_socket.recv(folder_name_size).decode("utf-8", errors="ignore")
-                self.receive_folder(client_socket, folder_name)
+                self.receive_folder(client_socket)
 
         client_socket.close()
         self.server_socket.close()
