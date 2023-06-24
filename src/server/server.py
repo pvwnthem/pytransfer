@@ -26,6 +26,7 @@ class Server:
 
     def receive_folder(self, client_socket):
         folder_name = client_socket.recv(1024).decode("utf-8")
+        print(folder_name)
 
         try:
             os.mkdir(folder_name)
