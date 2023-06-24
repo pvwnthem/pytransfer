@@ -11,6 +11,7 @@ class Client:
     def send_file(self, file_path):
         file_name = os.path.basename(file_path)
         file_name_size = len(file_name)
+        self.client_socket.send(b'0')  # Send flag indicating a file
         self.client_socket.send(file_name_size.to_bytes(4, "big"))
         self.client_socket.send(file_name.encode())
 
@@ -25,6 +26,9 @@ class Client:
 
     def send_folder(self, folder_path):
         folder_name = os.path.basename(folder_path)
+        folder_name_size = len(folder_name)
+        self.client_socket.send(b'1')  # Send flag indicating a folder
+        self.client_socket.send(folder_name_size.to_bytes(4, "big"))
         self.client_socket.send(folder_name.encode())
 
         for root, _, files in os.walk(folder_path):
@@ -32,7 +36,10 @@ class Client:
                 file_path = os.path.join(root, file)
                 self.send_file(file_path)
 
-    def run(self):
+        # Send a zero-length file name to indicate the end of the folder
+        self.client_socket.send(b'\x00\x00\x00\x00')
+
+    def send(self):
         try:
             self.client_socket.connect((self.ip, self.port))
 
