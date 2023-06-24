@@ -27,11 +27,12 @@ class Client:
     def send_folder(self, folder_path):
         folder_name = os.path.basename(folder_path)
         self.client_socket.send(folder_name.encode())
+        self.client_socket.send(b"1")  # Send file type as 1 for folder
 
         for root, _, files in os.walk(folder_path):
             for file in files:
                 file_path = os.path.join(root, file)
-                self.send_file(file_path)
+                self.send_file(file_path, 0)  # Set file type as 0 for individual files
     
     def run(self):
         try:
