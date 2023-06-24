@@ -43,16 +43,18 @@ class Server:
                     os.makedirs(file_name, exist_ok=True)
                     while True:
                         file_name_size = int.from_bytes(client_socket.recv(4), "big")
+                        print(file_name, file_name_size)
                         if file_name_size == 0:
                             break
                         file_name = client_socket.recv(file_name_size).decode()
-
+                        print(file_name)
                         with open(os.path.join(file_name, file_name), 'wb') as file:
                             while True:
                                 data = client_socket.recv(1024)
                                 if not data:
                                     break
                                 file.write(data)
+                                print("chill")
 
                         print("File received successfully:", file_name)
                 except IOError as e:
