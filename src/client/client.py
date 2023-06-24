@@ -10,11 +10,10 @@ class Client:
 
     def send_file(self, file_path):
         file_name = os.path.basename(file_path)
-        file_name_encoded = file_name.encode("utf-8")
-        file_name_size = len(file_name_encoded)
+        file_name_size = len(file_name)
         self.client_socket.send(b"FILE")
         self.client_socket.send(file_name_size.to_bytes(4, "big"))
-        self.client_socket.send(file_name_encoded)
+        self.client_socket.send(file_name.encode("utf-8"))
 
         try:
             with open(file_path, 'rb') as file:
@@ -27,18 +26,18 @@ class Client:
 
     def send_folder(self, folder_path):
         folder_name = os.path.basename(folder_path)
-        folder_name_encoded = folder_name.encode("utf-8")
-        folder_name_size = len(folder_name_encoded)
+        folder_name_size = len(folder_name)
         self.client_socket.send(b"FOLDER")
         self.client_socket.send(folder_name_size.to_bytes(4, "big"))
-        self.client_socket.send(folder_name_encoded)
+        self.client_socket.send(folder_name.encode("utf-8"))
 
         for root, _, files in os.walk(folder_path):
             for file in files:
                 file_path = os.path.join(root, file)
                 self.send_file(file_path)
+                self.client_socket.recv(1024)  # Receive acknowledgement after sending each file
 
-        self.client_socket.send(b"DONE")
+        self.client_socket.send(b"DONE")  # Send a message indicating all files have been sent
 
         # Wait for acknowledgement from the server
         ack = self.client_socket.recv(1024)

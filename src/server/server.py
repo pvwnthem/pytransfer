@@ -37,11 +37,11 @@ class Server:
 
         while True:
             self.receive_file(client_socket)
-            client_socket.send(b"ACK".encode())  # Send acknowledgement to client
+            client_socket.send(b"ACK")  # Send acknowledgement to client
 
             # Check if all files have been received
             data = client_socket.recv(1024)
-            if data.decode("utf-8") == "DONE":
+            if data == b"DONE":
                 break
 
         os.chdir("..")
