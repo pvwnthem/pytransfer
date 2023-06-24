@@ -39,6 +39,20 @@ class Client:
         # Send a zero-length file name to indicate the end of the folder
         self.client_socket.send(b'\x00\x00\x00\x00')
 
+    def receive_data(self, size):
+        data = b""
+        while len(data) < size:
+            packet = self.client_socket.recv(size - len(data))
+            if not packet:
+                break
+            data += packet
+        return data
+
+    def receive_file_name(self):
+        name_size = int.from_bytes(self.receive_data(4), "big")
+        file_name = self.receive_data(name_size).decode()
+        return file_name
+
     def send(self):
         try:
             self.client_socket.connect((self.ip, self.port))
