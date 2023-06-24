@@ -56,7 +56,7 @@ class FileSharerServer:
     def start(self):
         self.socket.bind((socket.gethostname(), self.port))
         self.socket.listen(1)
-        print("Server started. Waiting for connections...")
+        print(f"Server started at {self.socket.getsockname()[0]}. Waiting for connections...")
 
         while True:
             client_socket, client_address = self.socket.accept()
