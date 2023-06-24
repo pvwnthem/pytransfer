@@ -18,7 +18,7 @@ class Server:
         file_name = client_socket.recv(file_name_size).decode()
 
         file_type = client_socket.recv(1)
-        print(file_type)
+        print(file_type.decode())
 
         try:
             with open(file_name, 'wb') as file:
