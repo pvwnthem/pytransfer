@@ -60,6 +60,7 @@ class Server:
         print("Connected to:", addr)
 
         while True:
+            print("wtf2")
             data = client_socket.recv(1024)
             if not data:
                 print("wtf")
