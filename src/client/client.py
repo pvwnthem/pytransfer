@@ -35,12 +35,15 @@ class Client:
             for file in files:
                 file_path = os.path.join(root, file)
                 self.send_file(file_path)
+                print("shent")
 
         # Send a message indicating all files have been sent
+        print("DOnt")
         self.client_socket.send(b"DONE")
-
+        print("DOnt")
         # Wait for acknowledgement from the server
         ack = self.client_socket.recv(1024)
+        print(ack)
         if ack == b"ACK":
             print("Folder sent successfully:", folder_name)
 
