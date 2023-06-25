@@ -4,15 +4,15 @@ import errno
 class Server:
     def __init__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = ''
+        self.host = "127.0.0.1"
         self.port = 9999
 
     def run(self):
         self.server_socket.setblocking(False)
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, 5000)  # Set receive timeout to 5 seconds
-        self.server_socket.bind(('0.0.0.0', self.port))
+        self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(1)
-        print("Server is listening for incoming connections on port", self.port, "with IP", self.server_socket.getsockname()[0])
+        print("Server is listening for incoming connections on port", self.port, "with ip", self.server_socket.getsockname()[0])
 
         while True:
             try:
@@ -26,6 +26,7 @@ class Server:
                 else:
                     print("An error occurred while accepting a connection:", str(e))
                     return
+
 
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
         file_name = client_socket.recv(file_name_size).decode()
