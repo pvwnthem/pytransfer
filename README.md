@@ -1,3 +1,5 @@
+# PyTransfer is currently a very heavy WIP. It has a partial amount of it's planned features currently active and it only works on some systems. If it works for you it is safe to use.
+
 # PyTransfer
 
 PyTransfer is a Python-based file transfer program that allows you to send files or folders between two computers using sockets.
