@@ -11,21 +11,18 @@ class Server:
         self.server_socket.setblocking(False)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(1)
-        print("Server is listening for incoming connections on port", self.port, "with ip", self.server_socket.getsockname()[0])
+        print(f"Server is listening for incoming connections on port {self.port} with IP {self.server_socket.getsockname()[0]}")
 
         while True:
             try:
                 client_socket, addr = self.server_socket.accept()
                 print("Connected to:", addr)
                 break
+            except BlockingIOError:
+                continue
             except socket.error as e:
-                err = e.args[0]
-                if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
-                    continue
-                else:
-                    print("An error occurred while accepting a connection:", str(e))
-                    return
-
+                print("An error occurred while accepting a connection:", str(e))
+                return
 
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
         file_name = client_socket.recv(file_name_size).decode()
@@ -41,6 +38,6 @@ class Server:
             print("File received successfully:", file_name)
         except IOError as e:
             print("An error occurred while receiving the file:", str(e))
-
-        client_socket.close()
-        self.server_socket.close()
+        finally:
+            client_socket.close()
+            self.server_socket.close()

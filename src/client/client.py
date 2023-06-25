@@ -46,5 +46,5 @@ class Client:
 
         except ConnectionRefusedError:
             print("Failed to connect to the peer:", self.ip)
-
-        self.client_socket.close()
+        finally:
+            self.client_socket.close()
