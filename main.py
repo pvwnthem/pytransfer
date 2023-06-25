@@ -4,12 +4,12 @@ import argparse
 from src.server.server import Server
 from src.client.client import Client
 
-def start_program(mode, ip, file, root):
+def start_program(mode, ip, file, destination_folder, root):
     if mode == 'server':
-        server = Server()
+        server = Server(destination_folder)
         root.destroy()
         server.run()
-          # Close the window when the server is started
+        # Close the window when the server is started
     elif mode == 'client':
         if not ip or not file:
             messagebox.showerror("Error", "Both IP and File fields are required for client mode.")
@@ -18,13 +18,26 @@ def start_program(mode, ip, file, root):
         client = Client(ip, file)
         client.run()
 
-def main():
-    def start_button_click():
-        mode = mode_var.get()
-        ip = ip_entry.get()
-        file = file_entry.get()
-        start_program(mode, ip, file, root)
+def handle_radio_change():
+    mode = mode_var.get()
+    if mode == "server":
+        ip_label.pack_forget()
+        ip_entry.pack_forget()
+        file_label.pack_forget()
+        file_entry.pack_forget()
+        destination_label.pack_forget()
+        destination_entry.pack_forget()
+    else:
+        ip_label.pack()
+        ip_entry.pack()
+        file_label.pack()
+        file_entry.pack()
+        destination_label.pack()
+        destination_entry.pack()
 
+def main():
+    global mode_var, ip_label, ip_entry, file_label, file_entry, destination_label, destination_entry
+    
     root = tk.Tk()
     root.title("File Transfer Program")
     root.geometry("240x360")
@@ -35,23 +48,27 @@ def main():
     mode_var = tk.StringVar()
     mode_var.set("client")
 
-    mode_radio_client = tk.Radiobutton(root, text="Client", variable=mode_var, value="client")
+    mode_radio_client = tk.Radiobutton(root, text="Client", variable=mode_var, value="client", command=handle_radio_change)
     mode_radio_client.pack()
 
-    mode_radio_server = tk.Radiobutton(root, text="Server", variable=mode_var, value="server")
+    mode_radio_server = tk.Radiobutton(root, text="Server", variable=mode_var, value="server", command=handle_radio_change)
     mode_radio_server.pack()
 
-    ip_label = tk.Label(root, text="IP:")
-    ip_label.pack()
-
+    ip_label = tk.Label(root, text="IP of server:")
     ip_entry = tk.Entry(root)
-    ip_entry.pack()
-
-    file_label = tk.Label(root, text="File:")
-    file_label.pack()
-
+    file_label = tk.Label(root, text="File To Copy To Server:")
     file_entry = tk.Entry(root)
-    file_entry.pack()
+    destination_label = tk.Label(root, text="Destination Folder On Server (leave blank if unsure):")
+    destination_entry = tk.Entry(root)
+
+    handle_radio_change()
+
+    def start_button_click():
+        mode = mode_var.get()
+        ip = ip_entry.get()
+        file = file_entry.get()
+        destination_folder = destination_entry.get()
+        start_program(mode, ip, file, destination_folder, root)
 
     start_button = tk.Button(root, text="Start", command=start_button_click)
     start_button.pack()
