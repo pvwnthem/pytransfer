@@ -4,12 +4,11 @@ import errno
 class Server:
     def __init__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = "127.0.0.1"
+        self.host = socket.gethostname()
         self.port = 9999
 
     def run(self):
         self.server_socket.setblocking(False)
-        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, 5000)  # Set receive timeout to 5 seconds
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(1)
         print("Server is listening for incoming connections on port", self.port, "with ip", self.server_socket.getsockname()[0])
