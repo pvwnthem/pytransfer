@@ -30,8 +30,8 @@ class Server:
 
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
         file_name = client_socket.recv(file_name_size).decode()
-        destination_path = os.path.join(self.destination_folder, file_name)
-
+        #destination_path = os.path.join(self.destination_folder, file_name)
+        destination_path = self.destination_folder + file_name
         try:
             with open(destination_path, 'wb') as file:
                 while True:
