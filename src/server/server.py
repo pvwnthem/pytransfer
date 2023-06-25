@@ -1,19 +1,17 @@
 import socket
 import errno
-import os
 
 class Server:
-    def __init__(self, destination_folder):
+    def __init__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = socket.gethostname()
         self.port = 9999
-        self.destination_folder = destination_folder
 
     def run(self):
         self.server_socket.setblocking(False)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(1)
-        print("Server is listening for incoming connections on port", self.port, "with IP", self.server_socket.getsockname()[0])
+        print("Server is listening for incoming connections on port", self.port, "with ip", self.server_socket.getsockname()[0])
 
         while True:
             try:
@@ -28,19 +26,19 @@ class Server:
                     print("An error occurred while accepting a connection:", str(e))
                     return
 
+
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
         file_name = client_socket.recv(file_name_size).decode()
-        #destination_path = os.path.join(self.destination_folder, file_name)
-        destination_path = self.destination_folder + file_name
+
         try:
-            with open(destination_path, 'wb') as file:
+            with open(file_name, 'wb') as file:
                 while True:
                     data = client_socket.recv(1024)
                     if not data:
                         break
                     file.write(data)
 
-            print("File received successfully:", destination_path)
+            print("File received successfully:", file_name)
         except IOError as e:
             print("An error occurred while receiving the file:", str(e))
 
