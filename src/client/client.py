@@ -10,15 +10,14 @@ class Client:
 
     def send_file(self, file_path):
         file_name = os.path.basename(file_path)
-        file_size = os.path.getsize(file_path)
-        self.client_socket.sendall(file_size.to_bytes(8, "big"))  # Send file size
+        file_name_size = len(file_name)
+        self.client_socket.send(file_name_size.to_bytes(4, "big"))
+        self.client_socket.send(file_name.encode())
 
         try:
             with open(file_path, 'rb') as file:
-                data = file.read(1024)
-                while data:
-                    self.client_socket.sendall(data)
-                    data = file.read(1024)
+                for data in file:
+                    self.client_socket.send(data)
 
             print("File sent successfully:", file_name)
         except IOError as e:
