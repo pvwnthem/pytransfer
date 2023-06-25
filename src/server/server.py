@@ -1,18 +1,31 @@
 import socket
+import errno
 
 class Server:
     def __init__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = socket.gethostname()
+        self.host = ''
         self.port = 9999
 
     def run(self):
-        self.server_socket.bind((self.host, self.port))
+        self.server_socket.setblocking(False)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, 5000)  # Set receive timeout to 5 seconds
+        self.server_socket.bind(('0.0.0.0', self.port))
         self.server_socket.listen(1)
-        print("Server is listening for incoming connections on port", self.port, "with ip", self.server_socket.getsockname()[0])
+        print("Server is listening for incoming connections on port", self.port, "with IP", self.server_socket.getsockname()[0])
 
-        client_socket, addr = self.server_socket.accept()
-        print("Connected to:", addr)
+        while True:
+            try:
+                client_socket, addr = self.server_socket.accept()
+                print("Connected to:", addr)
+                break
+            except socket.error as e:
+                err = e.args[0]
+                if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+                    continue
+                else:
+                    print("An error occurred while accepting a connection:", str(e))
+                    return
 
         file_name_size = int.from_bytes(client_socket.recv(4), "big")
         file_name = client_socket.recv(file_name_size).decode()
