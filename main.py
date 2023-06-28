@@ -4,6 +4,9 @@ import argparse
 from src.server.server import Server
 from src.client.client import Client
 
+
+# TODO: use absolute paths for files
+
 def start_program(mode, ip, file, root):
     if mode == 'server':
         server = Server()
